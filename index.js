@@ -63,3 +63,25 @@ function renderChart(chartData, year) {
         .attr('dy', 45)
         .style('font-size', '24px')
         .text(`${year}`)
+    chart.append('g').attr('transform', 'translate(0, 0)').call(yAxis)
+    d3.selectAll('.myLine text').style('fill', '#fff')
+    d3.selectAll('.myLine line').style('stroke', '#fff')
+    d3.selectAll('.myLine path').style('stroke', '#fff')
+
+    let items = []
+
+    chartData.forEach((row) => {
+        let index = 0
+        Object.keys(row).forEach((key) => {
+            if (key !== 'label') {
+                if (items[index]) {
+                    items[index].push([row.label, row[key], key, index])
+                } else {
+                    items[index] = [
+                        [row.label, row[key], key, index]
+                    ]
+                }
+                index++
+            }
+        })
+    })
