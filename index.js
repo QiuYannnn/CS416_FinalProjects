@@ -152,4 +152,16 @@ function renderChart(chartData, year) {
         .attr('fill', (d, i) => '#4385F4')
         .attr('fill-opacity', '0.5')
         .attr('transform', `translate(${xScale.bandwidth() / 2}, 0)`)
+    
+    // animate
+    function animate(pointX, pointY) {
+        const domain = d3.range(0, 1, 1 / (pointX.length - 1))
+        domain.push(1)
+        const interpolateX = d3.scaleLinear().domain(domain).range(pointX)
+        const interpolateY = d3.scaleLinear().domain(domain).range(pointY)
+        return {
+            x: interpolateX,
+            y: interpolateY
+        }
+    }
 }
