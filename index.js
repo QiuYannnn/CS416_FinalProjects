@@ -164,4 +164,47 @@ function renderChart(chartData, year) {
             y: interpolateY
         }
     }
+    
+    d3.selectAll('path.lines')
+        .transition()
+        .duration(2000)
+        .attrTween('d', (_d) => {
+            const pointX = _d.map((d) => xScale(d[0]))
+            const pointY = _d.map((d) => yScale(d[1]))
+
+            const interpolate = animate(pointX, pointY)
+            const ponits = []
+
+            return function (t) {
+                ponits.push([interpolate.x(t), interpolate.y(t)])
+                return line(ponits)
+            }
+        })
+
+    d3.selectAll('path.area')
+        .transition()
+        .duration(2000)
+        .attrTween('d', (_d) => {
+            const pointX = _d.map((d) => xScale(d[0]))
+            const pointY = _d.map((d) => yScale(d[1]))
+
+            const interpolate = animate(pointX, pointY)
+            const ponits = []
+
+            return function (t) {
+                ponits.push([interpolate.x(t), interpolate.y(t)])
+                return generateArea(ponits)
+            }
+        })
+
+    d3.selectAll('.Gcircle')
+        .selectAll('circle')
+        .attr('r', 0)
+        .transition()
+        .duration(300)
+        .delay(function (d, i) {
+            return (i * 2000) / chartData.length
+        })
+        .attr('r', 4)
+        .style('stroke-width', 3)
 }
