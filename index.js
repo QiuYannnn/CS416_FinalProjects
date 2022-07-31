@@ -85,3 +85,36 @@ function renderChart(chartData, year) {
             }
         })
     })
+     let line = d3
+        .line()
+        .x(function (d) {
+            return d[0]
+        })
+        .y(function (d) {
+            return d[1]
+        })
+
+    const groups = chart.selectAll().data(items)
+
+    const lines = groups
+        .enter()
+        .append('g')
+        .selectAll()
+        .data((d) => [d])
+
+    lines
+        .enter()
+        .append('path')
+        .attr('class', 'lines')
+        .attr('d', function (d) {
+            const row = d.map((item) => {
+                const itemS = []
+                itemS.push(xScale(item[0]))
+                itemS.push(yScale(item[1]))
+                return [...itemS]
+            })
+            return line(row)
+        })
+        .attr('stroke', (d, i) => '#4385F4')
+        .attr('fill', 'none')
+        .attr('transform', `translate(${xScale.bandwidth() / 2}, 0)`)
