@@ -145,4 +145,11 @@ function renderChart(chartData, year) {
         .x((d) => d[0])
         .y0((d) => d[1])
         .y1((d) => 400)
+    lines
+        .enter()
+        .append('path')
+        .attr('class', 'area')
+        .attr('fill', (d, i) => '#4385F4')
+        .attr('fill-opacity', '0.5')
+        .attr('transform', `translate(${xScale.bandwidth() / 2}, 0)`)
 }
