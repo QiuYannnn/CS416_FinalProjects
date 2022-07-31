@@ -118,3 +118,31 @@ function renderChart(chartData, year) {
         .attr('stroke', (d, i) => '#4385F4')
         .attr('fill', 'none')
         .attr('transform', `translate(${xScale.bandwidth() / 2}, 0)`)
+    
+    const circles = groups
+        .enter()
+        .append('g')
+        .attr('class', 'Gcircle')
+        .selectAll()
+        .data((d) => d)
+
+    circles
+        .enter()
+        .append('circle')
+        .attr('cx', function (d) {
+            return xScale(d[0])
+        })
+        .attr('cy', function (d) {
+            return yScale(d[1])
+        })
+        .attr('r', 4)
+        .attr('transform', `translate(${xScale.bandwidth() / 2}, 0)`)
+        .attr('fill', '#fff')
+        .attr('stroke', 'rgba(56, 8, 228, .5)')
+
+    const generateArea = d3
+        .area()
+        .x((d) => d[0])
+        .y0((d) => d[1])
+        .y1((d) => 400)
+}
