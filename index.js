@@ -1,4 +1,8 @@
-// load csv
+/**
+ * @author Yanhao Qiu
+ * @description: Load the CSV file, process the data, and define the data required by the three scenes as year1data year2data year3data respectively.
+ * @date 2022-07-29 19:20
+ */
 d3.csv("./sales-cars.csv", (data) => {
     console.log("data = ", data)
     let year1Data = data.slice(0, 12);
@@ -25,9 +29,19 @@ d3.csv("./sales-cars.csv", (data) => {
     // console.log("year1Data = ", year1Data)
     // console.log("year2Data = ", year2Data)
     // console.log("year3Data = ", year3Data)
+    /**
+     * @author Yanhao Qiu
+     * @description: Load the first scene by default.
+     * @date 2022-07-29 20:20
+     */
     renderChart(year1Data, 2016);
     let btnArr = document.getElementsByClassName("btn");
     console.log("btn = ", btnArr)
+    /**
+     * @author Yanhao Qiu
+     * @description: Bind click events to the year list on the right to switch scenes.
+     * @date 2022-07-29 20:42
+     */
     for (let i = 0; i < btnArr.length; i++) {
 
         btnArr[i].onclick = function () {
@@ -35,7 +49,7 @@ d3.csv("./sales-cars.csv", (data) => {
             btnArr[i].classList.add("btnActive");
             let dArr = document.getElementsByClassName("centerBottomLeftBottom");
             // console.log(dArr)
-            for(let i = 0; i < dArr.length; i++) {
+            for (let i = 0; i < dArr.length; i++) {
                 dArr[i].style.display = 'none';
             }
             dArr[i].style.display = 'block';
@@ -55,13 +69,20 @@ d3.csv("./sales-cars.csv", (data) => {
     }
 
 })
-
-// render chart
-
+/**
+ * @author Yanhao Qiu
+ * @description: We have defined a chart rendering function, and the parameters are chart data chartdata and current year respectively.
+ * @date 2022-07-28 10:24
+ */
 function renderChart(chartData, year) {
-    var width = 450
+    var width = 450 + 100
     var height = 480
     var margin = 20
+    /**
+     * @author Yanhao Qiu
+     * @description: Draw the x-axis and Y-axis of the chart, and define the background style of the chart.
+     * @date 2022-07-28 18:24
+     */
 
     var svg = d3
         .select('.myLine')
@@ -70,7 +91,7 @@ function renderChart(chartData, year) {
         .attr('height', height)
         .style('background-color', '#1a3055')
 
-    var chart = svg.append('g').attr('transform', `translate(${margin * 2}, ${margin})`)
+    var chart = svg.append('g').attr('transform', `translate(${margin * 5}, ${margin})`)
 
     var xScale = d3
         .scaleBand()
@@ -85,7 +106,7 @@ function renderChart(chartData, year) {
         .axisLeft()
         .scale(yScale)
         .tickFormat((d) => {
-            return d;
+            return d + ' ten thousand';
         })
 
     d3.select('.xAxis')
@@ -102,7 +123,11 @@ function renderChart(chartData, year) {
     d3.selectAll('.myLine path').style('stroke', '#fff')
 
     let items = []
-
+    /**
+     * @author Yanhao Qiu
+     * @description: Process the data and adapt the chart
+     * @date 2022-07-29 20:42
+     */
     chartData.forEach((row) => {
         let index = 0
         Object.keys(row).forEach((key) => {
@@ -118,7 +143,11 @@ function renderChart(chartData, year) {
             }
         })
     })
-
+    /**
+     * @author Yanhao Qiu
+     * @description: According to the incoming data of the chart, draw the vertices of the chart polyline and the polyline connection
+     * @date 2022-07-29 21:03
+     */
     let line = d3
         .line()
         .x(function (d) {
@@ -188,7 +217,11 @@ function renderChart(chartData, year) {
         .attr('fill-opacity', '0.5')
         .attr('transform', `translate(${xScale.bandwidth() / 2}, 0)`)
 
-    // animate
+    /**
+     * @author Yanhao Qiu
+     * @description: Encapsulated chart animation.
+     * @date 2022-07-29 08:24
+     */
     function animate(pointX, pointY) {
         const domain = d3.range(0, 1, 1 / (pointX.length - 1))
         domain.push(1)
@@ -215,6 +248,11 @@ function renderChart(chartData, year) {
                 return line(ponits)
             }
         })
+    /**
+     * @author Yanhao Qiu
+     * @description: Draw the area block below the broken line of the chart.
+     * @date 2022-07-29 08:24
+     */
 
     d3.selectAll('path.area')
         .transition()
