@@ -1,3 +1,6 @@
+// load csv
+d3.csv("./sales-cars.csv", (data) => {
+    console.log("data = ", data)
     let year1Data = data.slice(0, 12);
     year1Data = year1Data.map((v) => {
         return {
@@ -19,10 +22,39 @@
             value: v.Sales
         };
     })
-    console.log("year1Data = ", year1Data)
-    console.log("year2Data = ", year2Data)
-    console.log("year3Data = ", year3Data)
+    // console.log("year1Data = ", year1Data)
+    // console.log("year2Data = ", year2Data)
+    // console.log("year3Data = ", year3Data)
+    renderChart(year1Data, 2016);
+    let btnArr = document.getElementsByClassName("btn");
+    console.log("btn = ", btnArr)
+    for (let i = 0; i < btnArr.length; i++) {
 
+        btnArr[i].onclick = function () {
+            document.getElementsByClassName("btnActive")[0].classList.remove("btnActive");
+            btnArr[i].classList.add("btnActive");
+            let dArr = document.getElementsByClassName("centerBottomLeftBottom");
+            // console.log(dArr)
+            for(let i = 0; i < dArr.length; i++) {
+                dArr[i].style.display = 'none';
+            }
+            dArr[i].style.display = 'block';
+
+            d3
+                .select('.myLine').html('')
+            if (i == 0) {
+                renderChart(year1Data, 2016);
+            }
+            if (i == 1) {
+                renderChart(year2Data, 2017);
+            }
+            if (i == 2) {
+                renderChart(year3Data, 2018);
+            }
+        }
+    }
+
+})
 
 // render chart
 
@@ -63,6 +95,7 @@ function renderChart(chartData, year) {
         .attr('dy', 45)
         .style('font-size', '24px')
         .text(`${year}`)
+
     chart.append('g').attr('transform', 'translate(0, 0)').call(yAxis)
     d3.selectAll('.myLine text').style('fill', '#fff')
     d3.selectAll('.myLine line').style('stroke', '#fff')
@@ -85,7 +118,8 @@ function renderChart(chartData, year) {
             }
         })
     })
-     let line = d3
+
+    let line = d3
         .line()
         .x(function (d) {
             return d[0]
@@ -118,7 +152,7 @@ function renderChart(chartData, year) {
         .attr('stroke', (d, i) => '#4385F4')
         .attr('fill', 'none')
         .attr('transform', `translate(${xScale.bandwidth() / 2}, 0)`)
-    
+
     const circles = groups
         .enter()
         .append('g')
@@ -145,6 +179,7 @@ function renderChart(chartData, year) {
         .x((d) => d[0])
         .y0((d) => d[1])
         .y1((d) => 400)
+
     lines
         .enter()
         .append('path')
@@ -152,7 +187,7 @@ function renderChart(chartData, year) {
         .attr('fill', (d, i) => '#4385F4')
         .attr('fill-opacity', '0.5')
         .attr('transform', `translate(${xScale.bandwidth() / 2}, 0)`)
-    
+
     // animate
     function animate(pointX, pointY) {
         const domain = d3.range(0, 1, 1 / (pointX.length - 1))
@@ -164,7 +199,7 @@ function renderChart(chartData, year) {
             y: interpolateY
         }
     }
-    
+
     d3.selectAll('path.lines')
         .transition()
         .duration(2000)
