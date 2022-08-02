@@ -34,7 +34,34 @@ d3.csv("./sales-cars.csv", (data) => {
      * @description: Load the first scene by default.
      * @date 2022-07-29 20:20
      */
-    renderChart(year1Data, 2016);
+    const annotations2016 = [{
+        note: {
+            title: "November"
+        },
+        x: 450,
+        y: 200,
+        dy: -100,
+        dx: -50
+    }]
+    const annotations2017 = [{
+        note: {
+            title: "October"
+        },
+        x: 418,
+        y: 145,
+        dy: -50,
+        dx: -10
+    }]
+    const annotations2018 = [{
+        note: {
+            title: "November"
+        },
+        x: 450,
+        y: 70,
+        dy: -20,
+        dx: -100
+    }]
+    renderChart(year1Data, 2016, annotations2016);
     let btnArr = document.getElementsByClassName("btn");
     console.log("btn = ", btnArr)
     /**
@@ -57,13 +84,13 @@ d3.csv("./sales-cars.csv", (data) => {
             d3
                 .select('.myLine').html('')
             if (i == 0) {
-                renderChart(year1Data, 2016);
+                renderChart(year1Data, 2016, annotations2016);
             }
             if (i == 1) {
-                renderChart(year2Data, 2017);
+                renderChart(year2Data, 2017, annotations2017);
             }
             if (i == 2) {
-                renderChart(year3Data, 2018);
+                renderChart(year3Data, 2018, annotations2018);
             }
         }
     }
@@ -74,7 +101,7 @@ d3.csv("./sales-cars.csv", (data) => {
  * @description: We have defined a chart rendering function, and the parameters are chart data chartdata and current year respectively.
  * @date 2022-07-28 10:24
  */
-function renderChart(chartData, year) {
+function renderChart(chartData, year, annotations) {
     var width = 450 + 100
     var height = 480
     var margin = 20
@@ -92,7 +119,15 @@ function renderChart(chartData, year) {
         .style('background-color', '#1a3055')
 
     var chart = svg.append('g').attr('transform', `translate(${margin * 5}, ${margin})`)
+    setTimeout(() => {
+        // Add annotation to the chart
+        const makeAnnotations = d3.annotation()
+            .annotations(annotations)
+        d3.select("svg")
+            .append("g")
+            .call(makeAnnotations)
 
+    }, 2000)
     var xScale = d3
         .scaleBand()
         .range([0, 400])
@@ -201,7 +236,21 @@ function renderChart(chartData, year) {
         .attr('r', 4)
         .attr('transform', `translate(${xScale.bandwidth() / 2}, 0)`)
         .attr('fill', '#fff')
-        .attr('stroke', 'rgba(56, 8, 228, .5)')
+        .attr('stroke', 'rgba(56, 8, 228, .5)');
+
+
+    circles
+        .enter()
+        .append('text')
+        .attr('x', function (d) {
+            return xScale(d[0]) - 10
+        })
+        .attr('y', function (d) {
+            return yScale(d[1]) - 5
+        }).style('font-size', '12px').attr('transform', `translate(${xScale.bandwidth() / 2}, 0)`).attr('fill', '#fff').text(function (d) {
+            console.log("d3 = ", d)
+            return d[1];
+        })
 
     const generateArea = d3
         .area()
@@ -270,6 +319,8 @@ function renderChart(chartData, year) {
             }
         })
 
+
+
     d3.selectAll('.Gcircle')
         .selectAll('circle')
         .attr('r', 0)
@@ -280,4 +331,17 @@ function renderChart(chartData, year) {
         })
         .attr('r', 4)
         .style('stroke-width', 3)
+
+    d3.selectAll('.Gcircle')
+        .selectAll('text')
+        .style('opacity', 0)
+        .transition()
+        .duration(300)
+        .delay(function (d, i) {
+            return (i * 2000) / chartData.length
+        })
+        .style('opacity', 1)
+
+
+
 }
